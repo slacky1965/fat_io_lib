@@ -38,6 +38,9 @@
 #include "fat_misc.h"
 #include "fat_format.h"
 
+#include "osapi.h"
+#include "c_types.h"
+
 #if FATFS_INC_FORMAT_SUPPORT
 
 //-----------------------------------------------------------------------------
@@ -74,7 +77,7 @@ struct sec_per_clus_table _cluster_size_table32[] =
 //-----------------------------------------------------------------------------
 // fatfs_calc_cluster_size: Calculate what cluster size should be used
 //-----------------------------------------------------------------------------
-static uint8 fatfs_calc_cluster_size(uint32 sectors, int is_fat32)
+static uint8 ICACHE_FLASH_ATTR fatfs_calc_cluster_size(uint32 sectors, int is_fat32)
 {
     int i;
 
@@ -96,7 +99,7 @@ static uint8 fatfs_calc_cluster_size(uint32 sectors, int is_fat32)
 //-----------------------------------------------------------------------------
 // fatfs_erase_sectors: Erase a number of sectors
 //-----------------------------------------------------------------------------
-static int fatfs_erase_sectors(struct fatfs *fs, uint32 lba, int count)
+static int ICACHE_FLASH_ATTR fatfs_erase_sectors(struct fatfs *fs, uint32 lba, int count)
 {
     int i;
 
@@ -112,7 +115,7 @@ static int fatfs_erase_sectors(struct fatfs *fs, uint32 lba, int count)
 //-----------------------------------------------------------------------------
 // fatfs_create_boot_sector: Create the boot sector
 //-----------------------------------------------------------------------------
-static int fatfs_create_boot_sector(struct fatfs *fs, uint32 boot_sector_lba, uint32 vol_sectors, const char *name, int is_fat32)
+static int ICACHE_FLASH_ATTR fatfs_create_boot_sector(struct fatfs *fs, uint32 boot_sector_lba, uint32 vol_sectors, const char *name, int is_fat32)
 {
     uint32 total_clusters;
     int i;
@@ -348,7 +351,7 @@ static int fatfs_create_boot_sector(struct fatfs *fs, uint32 boot_sector_lba, ui
 //-----------------------------------------------------------------------------
 // fatfs_create_fsinfo_sector: Create the FSInfo sector (FAT32)
 //-----------------------------------------------------------------------------
-static int fatfs_create_fsinfo_sector(struct fatfs *fs, uint32 sector_lba)
+static int ICACHE_FLASH_ATTR fatfs_create_fsinfo_sector(struct fatfs *fs, uint32 sector_lba)
 {
     // Zero sector initially
     memset(fs->currentsector.sector, 0, FAT_SECTOR_SIZE);
@@ -389,7 +392,7 @@ static int fatfs_create_fsinfo_sector(struct fatfs *fs, uint32 sector_lba)
 //-----------------------------------------------------------------------------
 // fatfs_erase_fat: Erase FAT table using fs details in fs struct
 //-----------------------------------------------------------------------------
-static int fatfs_erase_fat(struct fatfs *fs, int is_fat32)
+static int ICACHE_FLASH_ATTR fatfs_erase_fat(struct fatfs *fs, int is_fat32)
 {
     uint32 i;
 
@@ -423,7 +426,7 @@ static int fatfs_erase_fat(struct fatfs *fs, int is_fat32)
 //-----------------------------------------------------------------------------
 // fatfs_format_fat16: Format a FAT16 partition
 //-----------------------------------------------------------------------------
-int fatfs_format_fat16(struct fatfs *fs, uint32 volume_sectors, const char *name)
+int ICACHE_FLASH_ATTR fatfs_format_fat16(struct fatfs *fs, uint32 volume_sectors, const char *name)
 {
     fs->currentsector.address = FAT32_INVALID_CLUSTER;
     fs->currentsector.dirty = 0;
@@ -472,7 +475,7 @@ int fatfs_format_fat16(struct fatfs *fs, uint32 volume_sectors, const char *name
 //-----------------------------------------------------------------------------
 // fatfs_format_fat32: Format a FAT32 partition
 //-----------------------------------------------------------------------------
-int fatfs_format_fat32(struct fatfs *fs, uint32 volume_sectors, const char *name)
+int ICACHE_FLASH_ATTR fatfs_format_fat32(struct fatfs *fs, uint32 volume_sectors, const char *name)
 {
     fs->currentsector.address = FAT32_INVALID_CLUSTER;
     fs->currentsector.dirty = 0;
@@ -521,7 +524,7 @@ int fatfs_format_fat32(struct fatfs *fs, uint32 volume_sectors, const char *name
 //-----------------------------------------------------------------------------
 // fatfs_format: Format a partition with either FAT16 or FAT32 based on size
 //-----------------------------------------------------------------------------
-int fatfs_format(struct fatfs *fs, uint32 volume_sectors, const char *name)
+int ICACHE_FLASH_ATTR fatfs_format(struct fatfs *fs, uint32 volume_sectors, const char *name)
 {
     // 2GB - 32K limit for safe behaviour for FAT16
     if (volume_sectors <= 4194304)

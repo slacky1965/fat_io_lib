@@ -41,6 +41,9 @@
 #include "fat_cache.h"
 #include "fat_format.h"
 
+#include "osapi.h"
+#include "c_types.h"
+
 //-----------------------------------------------------------------------------
 // Locals
 //-----------------------------------------------------------------------------
@@ -69,7 +72,7 @@ static void                _fl_init();
 //-----------------------------------------------------------------------------
 // _allocate_file: Find a slot in the open files buffer for a new file
 //-----------------------------------------------------------------------------
-static FL_FILE* _allocate_file(void)
+static FL_FILE* ICACHE_FLASH_ATTR _allocate_file(void)
 {
     // Allocate free file
     struct fat_node *node = fat_list_pop_head(&_free_file_list);
@@ -83,7 +86,7 @@ static FL_FILE* _allocate_file(void)
 //-----------------------------------------------------------------------------
 // _check_file_open: Returns true if the file is already open
 //-----------------------------------------------------------------------------
-static int _check_file_open(FL_FILE* file)
+static int ICACHE_FLASH_ATTR _check_file_open(FL_FILE* file)
 {
     struct fat_node *node;
 
@@ -106,7 +109,7 @@ static int _check_file_open(FL_FILE* file)
 //-----------------------------------------------------------------------------
 // _free_file: Free open file handle
 //-----------------------------------------------------------------------------
-static void _free_file(FL_FILE* file)
+static void ICACHE_FLASH_ATTR _free_file(FL_FILE* file)
 {
     // Remove from open list
     fat_list_remove(&_open_file_list, &file->list_node);
@@ -123,7 +126,7 @@ static void _free_file(FL_FILE* file)
 // _open_directory: Cycle through path string to find the start cluster
 // address of the highest subdir.
 //-----------------------------------------------------------------------------
-static int _open_directory(char *path, uint32 *pathCluster)
+static int ICACHE_FLASH_ATTR _open_directory(char *path, uint32 *pathCluster)
 {
     int levels;
     int sublevel;
@@ -163,7 +166,7 @@ static int _open_directory(char *path, uint32 *pathCluster)
 // _create_directory: Cycle through path string and create the end directory
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-static int _create_directory(char *path)
+static int ICACHE_FLASH_ATTR _create_directory(char *path)
 {
     FL_FILE* file;
     struct fat_dir_entry sfEntry;
@@ -322,7 +325,7 @@ static int _create_directory(char *path)
 //-----------------------------------------------------------------------------
 // _open_file: Open a file for reading
 //-----------------------------------------------------------------------------
-static FL_FILE* _open_file(const char *path)
+static FL_FILE* ICACHE_FLASH_ATTR _open_file(const char *path)
 {
     FL_FILE* file;
     struct fat_dir_entry sfEntry;
@@ -395,7 +398,7 @@ static FL_FILE* _open_file(const char *path)
 // _create_file: Create a new file
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-static FL_FILE* _create_file(const char *filename)
+static FL_FILE* ICACHE_FLASH_ATTR _create_file(const char *filename)
 {
     FL_FILE* file;
     struct fat_dir_entry sfEntry;
@@ -546,7 +549,7 @@ static FL_FILE* _create_file(const char *filename)
 //-----------------------------------------------------------------------------
 // _read_sectors: Read sector(s) from disk to file
 //-----------------------------------------------------------------------------
-static uint32 _read_sectors(FL_FILE* file, uint32 offset, uint8 *buffer, uint32 count)
+static uint32 ICACHE_FLASH_ATTR _read_sectors(FL_FILE* file, uint32 offset, uint8 *buffer, uint32 count)
 {
     uint32 Sector = 0;
     uint32 ClusterIdx = 0;
@@ -629,7 +632,7 @@ static uint32 _read_sectors(FL_FILE* file, uint32 offset, uint8 *buffer, uint32 
 //-----------------------------------------------------------------------------
 // fl_init: Initialise library
 //-----------------------------------------------------------------------------
-void fl_init(void)
+void ICACHE_FLASH_ATTR fl_init(void)
 {
     int i;
 
@@ -645,7 +648,7 @@ void fl_init(void)
 //-----------------------------------------------------------------------------
 // fl_attach_locks:
 //-----------------------------------------------------------------------------
-void fl_attach_locks(void (*lock)(void), void (*unlock)(void))
+void ICACHE_FLASH_ATTR fl_attach_locks(void (*lock)(void), void (*unlock)(void))
 {
     _fs.fl_lock = lock;
     _fs.fl_unlock = unlock;
@@ -653,7 +656,7 @@ void fl_attach_locks(void (*lock)(void), void (*unlock)(void))
 //-----------------------------------------------------------------------------
 // fl_attach_media:
 //-----------------------------------------------------------------------------
-int fl_attach_media(fn_diskio_read rd, fn_diskio_write wr)
+int ICACHE_FLASH_ATTR fl_attach_media(fn_diskio_read rd, fn_diskio_write wr)
 {
     int res;
 
@@ -676,7 +679,7 @@ int fl_attach_media(fn_diskio_read rd, fn_diskio_write wr)
 //-----------------------------------------------------------------------------
 // fl_shutdown: Call before shutting down system
 //-----------------------------------------------------------------------------
-void fl_shutdown(void)
+void ICACHE_FLASH_ATTR fl_shutdown(void)
 {
     // If first call to library, initialise
     CHECK_FL_INIT();
@@ -688,7 +691,7 @@ void fl_shutdown(void)
 //-----------------------------------------------------------------------------
 // fopen: Open or Create a file for reading or writing
 //-----------------------------------------------------------------------------
-void* fl_fopen(const char *path, const char *mode)
+void* ICACHE_FLASH_ATTR fl_fopen(const char *path, const char *mode)
 {
     int i;
     FL_FILE* file;
@@ -804,7 +807,7 @@ void* fl_fopen(const char *path, const char *mode)
 // _write_sectors: Write sector(s) to disk
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-static uint32 _write_sectors(FL_FILE* file, uint32 offset, uint8 *buf, uint32 count)
+static uint32 ICACHE_FLASH_ATTR _write_sectors(FL_FILE* file, uint32 offset, uint8 *buf, uint32 count)
 {
     uint32 SectorNumber = 0;
     uint32 ClusterIdx = 0;
@@ -892,7 +895,7 @@ static uint32 _write_sectors(FL_FILE* file, uint32 offset, uint8 *buf, uint32 co
 //-----------------------------------------------------------------------------
 // fl_fflush: Flush un-written data to the file
 //-----------------------------------------------------------------------------
-int fl_fflush(void *f)
+int ICACHE_FLASH_ATTR fl_fflush(void *f)
 {
 #if FATFS_INC_WRITE_SUPPORT
     FL_FILE *file = (FL_FILE *)f;
@@ -920,7 +923,7 @@ int fl_fflush(void *f)
 //-----------------------------------------------------------------------------
 // fl_fclose: Close an open file
 //-----------------------------------------------------------------------------
-void fl_fclose(void *f)
+void ICACHE_FLASH_ATTR fl_fclose(void *f)
 {
     FL_FILE *file = (FL_FILE *)f;
 
@@ -962,7 +965,7 @@ void fl_fclose(void *f)
 //-----------------------------------------------------------------------------
 // fl_fgetc: Get a character in the stream
 //-----------------------------------------------------------------------------
-int fl_fgetc(void *f)
+int ICACHE_FLASH_ATTR fl_fgetc(void *f)
 {
     int res;
     uint8 data = 0;
@@ -976,7 +979,7 @@ int fl_fgetc(void *f)
 //-----------------------------------------------------------------------------
 // fl_fgets: Get a string from a stream
 //-----------------------------------------------------------------------------
-char *fl_fgets(char *s, int n, void *f)
+char ICACHE_FLASH_ATTR *fl_fgets(char *s, int n, void *f)
 {
     int idx = 0;
 
@@ -1009,7 +1012,7 @@ char *fl_fgets(char *s, int n, void *f)
 //-----------------------------------------------------------------------------
 // fl_fread: Read a block of data from the file
 //-----------------------------------------------------------------------------
-int fl_fread(void * buffer, int size, int length, void *f )
+int ICACHE_FLASH_ATTR fl_fread(void * buffer, int size, int length, void *f )
 {
     uint32 sector;
     uint32 offset;
@@ -1111,7 +1114,7 @@ int fl_fread(void * buffer, int size, int length, void *f )
 //-----------------------------------------------------------------------------
 // fl_fseek: Seek to a specific place in the file
 //-----------------------------------------------------------------------------
-int fl_fseek( void *f, long offset, int origin )
+int ICACHE_FLASH_ATTR fl_fseek( void *f, long offset, int origin )
 {
     FL_FILE *file = (FL_FILE *)f;
     int res = -1;
@@ -1180,7 +1183,7 @@ int fl_fseek( void *f, long offset, int origin )
 //-----------------------------------------------------------------------------
 // fl_fgetpos: Get the current file position
 //-----------------------------------------------------------------------------
-int fl_fgetpos(void *f , uint32 * position)
+int ICACHE_FLASH_ATTR fl_fgetpos(void *f , uint32 * position)
 {
     FL_FILE *file = (FL_FILE *)f;
 
@@ -1199,7 +1202,7 @@ int fl_fgetpos(void *f , uint32 * position)
 //-----------------------------------------------------------------------------
 // fl_ftell: Get the current file position
 //-----------------------------------------------------------------------------
-long fl_ftell(void *f)
+long ICACHE_FLASH_ATTR fl_ftell(void *f)
 {
     uint32 pos = 0;
 
@@ -1210,7 +1213,7 @@ long fl_ftell(void *f)
 //-----------------------------------------------------------------------------
 // fl_feof: Is the file pointer at the end of the stream?
 //-----------------------------------------------------------------------------
-int fl_feof(void *f)
+int ICACHE_FLASH_ATTR fl_feof(void *f)
 {
     FL_FILE *file = (FL_FILE *)f;
     int res;
@@ -1233,7 +1236,7 @@ int fl_feof(void *f)
 // fl_fputc: Write a character to the stream
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fl_fputc(int c, void *f)
+int ICACHE_FLASH_ATTR fl_fputc(int c, void *f)
 {
     uint8 data = (uint8)c;
     int res;
@@ -1249,7 +1252,7 @@ int fl_fputc(int c, void *f)
 // fl_fwrite: Write a block of data to the stream
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fl_fwrite(const void * data, int size, int count, void *f )
+int ICACHE_FLASH_ATTR fl_fwrite(const void * data, int size, int count, void *f )
 {
     FL_FILE *file = (FL_FILE *)f;
     uint32 sector;
@@ -1396,7 +1399,7 @@ int fl_fwrite(const void * data, int size, int count, void *f )
 // fl_fputs: Write a character string to the stream
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fl_fputs(const char * str, void *f)
+int ICACHE_FLASH_ATTR fl_fputs(const char * str, void *f)
 {
     int len = (int)strlen(str);
     int res = fl_fwrite(str, 1, len, f);
@@ -1411,7 +1414,7 @@ int fl_fputs(const char * str, void *f)
 // fl_remove: Remove a file from the filesystem
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fl_remove( const char * filename )
+int ICACHE_FLASH_ATTR fl_remove( const char * filename )
 {
     FL_FILE* file;
     int res = -1;
@@ -1446,7 +1449,7 @@ int fl_remove( const char * filename )
 // fl_createdirectory: Create a directory based on a path
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fl_createdirectory(const char *path)
+int ICACHE_FLASH_ATTR fl_createdirectory(const char *path)
 {
     int res;
 
@@ -1464,7 +1467,7 @@ int fl_createdirectory(const char *path)
 // fl_listdirectory: List a directory based on a path
 //-----------------------------------------------------------------------------
 #if FATFS_DIR_LIST_SUPPORT
-void fl_listdirectory(const char *path)
+void ICACHE_FLASH_ATTR fl_listdirectory(const char *path)
 {
     FL_DIR dirstat;
 
@@ -1508,7 +1511,7 @@ void fl_listdirectory(const char *path)
 // fl_opendir: Opens a directory for listing
 //-----------------------------------------------------------------------------
 #if FATFS_DIR_LIST_SUPPORT
-FL_DIR* fl_opendir(const char* path, FL_DIR *dir)
+FL_DIR* ICACHE_FLASH_ATTR fl_opendir(const char* path, FL_DIR *dir)
 {
     int levels;
     int res = 1;
@@ -1540,7 +1543,7 @@ FL_DIR* fl_opendir(const char* path, FL_DIR *dir)
 // fl_readdir: Get next item in directory
 //-----------------------------------------------------------------------------
 #if FATFS_DIR_LIST_SUPPORT
-int fl_readdir(FL_DIR *dirls, fl_dirent *entry)
+int ICACHE_FLASH_ATTR fl_readdir(FL_DIR *dirls, fl_dirent *entry)
 {
     int res = 0;
 
@@ -1560,7 +1563,7 @@ int fl_readdir(FL_DIR *dirls, fl_dirent *entry)
 // fl_closedir: Close directory after listing
 //-----------------------------------------------------------------------------
 #if FATFS_DIR_LIST_SUPPORT
-int fl_closedir(FL_DIR* dir)
+int ICACHE_FLASH_ATTR fl_closedir(FL_DIR* dir)
 {
     // Not used
     return 0;
@@ -1570,7 +1573,7 @@ int fl_closedir(FL_DIR* dir)
 // fl_is_dir: Is this a directory?
 //-----------------------------------------------------------------------------
 #if FATFS_DIR_LIST_SUPPORT
-int fl_is_dir(const char *path)
+int ICACHE_FLASH_ATTR fl_is_dir(const char *path)
 {
     int res = 0;
     FL_DIR dir;
@@ -1588,7 +1591,7 @@ int fl_is_dir(const char *path)
 // fl_format: Format a partition with either FAT16 or FAT32 based on size
 //-----------------------------------------------------------------------------
 #if FATFS_INC_FORMAT_SUPPORT
-int fl_format(uint32 volume_sectors, const char *name)
+int ICACHE_FLASH_ATTR fl_format(uint32 volume_sectors, const char *name)
 {
     return fatfs_format(&_fs, volume_sectors, name);
 }
@@ -1597,7 +1600,7 @@ int fl_format(uint32 volume_sectors, const char *name)
 // fl_get_fs:
 //-----------------------------------------------------------------------------
 #ifdef FATFS_INC_TEST_HOOKS
-struct fatfs* fl_get_fs(void)
+struct ICACHE_FLASH_ATTR fatfs* fl_get_fs(void)
 {
     return &_fs;
 }

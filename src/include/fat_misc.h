@@ -4,6 +4,9 @@
 #include "fat_defs.h"
 #include "fat_opts.h"
 
+#include "osapi.h"
+#include "c_types.h"
+
 //-----------------------------------------------------------------------------
 // Defines
 //-----------------------------------------------------------------------------
@@ -40,24 +43,24 @@ struct lfn_cache
 //-----------------------------------------------------------------------------
 // Prototypes
 //-----------------------------------------------------------------------------
-void    fatfs_lfn_cache_init(struct lfn_cache *lfn, int wipeTable);
-void    fatfs_lfn_cache_entry(struct lfn_cache *lfn, uint8 *entryBuffer);
-char*   fatfs_lfn_cache_get(struct lfn_cache *lfn);
-int     fatfs_entry_lfn_text(struct fat_dir_entry *entry);
-int     fatfs_entry_lfn_invalid(struct fat_dir_entry *entry);
-int     fatfs_entry_lfn_exists(struct lfn_cache *lfn, struct fat_dir_entry *entry);
-int     fatfs_entry_sfn_only(struct fat_dir_entry *entry);
-int     fatfs_entry_is_dir(struct fat_dir_entry *entry);
-int     fatfs_entry_is_file(struct fat_dir_entry *entry);
-int     fatfs_lfn_entries_required(char *filename);
-void    fatfs_filename_to_lfn(char *filename, uint8 *buffer, int entry, uint8 sfnChk);
-void    fatfs_sfn_create_entry(char *shortfilename, uint32 size, uint32 startCluster, struct fat_dir_entry *entry, int dir);
-int     fatfs_lfn_create_sfn(char *sfn_output, char *filename);
-int     fatfs_lfn_generate_tail(char *sfn_output, char *sfn_input, uint32 tailNum);
-void    fatfs_convert_from_fat_time(uint16 fat_time, int *hours, int *minutes, int *seconds);
-void    fatfs_convert_from_fat_date(uint16 fat_date, int *day, int *month, int *year);
-uint16  fatfs_convert_to_fat_time(int hours, int minutes, int seconds);
-uint16  fatfs_convert_to_fat_date(int day, int month, int year);
-void    fatfs_print_sector(uint32 sector, uint8 *data);
+void   ICACHE_FLASH_ATTR fatfs_lfn_cache_init(struct lfn_cache *lfn, int wipeTable);
+void   ICACHE_FLASH_ATTR fatfs_lfn_cache_entry(struct lfn_cache *lfn, uint8 *entryBuffer);
+char*  ICACHE_FLASH_ATTR fatfs_lfn_cache_get(struct lfn_cache *lfn);
+int    ICACHE_FLASH_ATTR fatfs_entry_lfn_text(struct fat_dir_entry *entry);
+int    ICACHE_FLASH_ATTR fatfs_entry_lfn_invalid(struct fat_dir_entry *entry);
+int    ICACHE_FLASH_ATTR fatfs_entry_lfn_exists(struct lfn_cache *lfn, struct fat_dir_entry *entry);
+int    ICACHE_FLASH_ATTR fatfs_entry_sfn_only(struct fat_dir_entry *entry);
+int    ICACHE_FLASH_ATTR fatfs_entry_is_dir(struct fat_dir_entry *entry);
+int    ICACHE_FLASH_ATTR fatfs_entry_is_file(struct fat_dir_entry *entry);
+int    ICACHE_FLASH_ATTR fatfs_lfn_entries_required(char *filename);
+void   ICACHE_FLASH_ATTR fatfs_filename_to_lfn(char *filename, uint8 *buffer, int entry, uint8 sfnChk);
+void   ICACHE_FLASH_ATTR fatfs_sfn_create_entry(char *shortfilename, uint32 size, uint32 startCluster, struct fat_dir_entry *entry, int dir);
+int    ICACHE_FLASH_ATTR fatfs_lfn_create_sfn(char *sfn_output, char *filename);
+int    ICACHE_FLASH_ATTR fatfs_lfn_generate_tail(char *sfn_output, char *sfn_input, uint32 tailNum);
+void   ICACHE_FLASH_ATTR fatfs_convert_from_fat_time(uint16 fat_time, int *hours, int *minutes, int *seconds);
+void   ICACHE_FLASH_ATTR fatfs_convert_from_fat_date(uint16 fat_date, int *day, int *month, int *year);
+uint16 ICACHE_FLASH_ATTR fatfs_convert_to_fat_time(int hours, int minutes, int seconds);
+uint16 ICACHE_FLASH_ATTR fatfs_convert_to_fat_date(int day, int month, int year);
+void   ICACHE_FLASH_ATTR fatfs_print_sector(uint32 sector, uint8 *data);
 
 #endif

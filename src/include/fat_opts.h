@@ -74,11 +74,11 @@
     // Don't include stdio, but there is a printf function available
     #ifdef FAT_PRINTF_NOINC_STDIO
         extern int printf(const char* ctrl1, ... );
-        #define FAT_PRINTF(a)               printf a
+        #define FAT_PRINTF(a)               os_printf a
     // Include stdio to use printf
     #else
         #include <stdio.h>
-        #define FAT_PRINTF(a)               printf a
+        #define FAT_PRINTF(a)               os_printf a
     #endif
 #endif
 

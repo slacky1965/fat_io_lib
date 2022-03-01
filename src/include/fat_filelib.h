@@ -76,26 +76,26 @@ typedef struct sFL_FILE
 //-----------------------------------------------------------------------------
 
 // External
-void                fl_init(void);
-void                fl_attach_locks(void (*lock)(void), void (*unlock)(void));
-int                 fl_attach_media(fn_diskio_read rd, fn_diskio_write wr);
-void                fl_shutdown(void);
+void    ICACHE_FLASH_ATTR fl_init(void);
+void    ICACHE_FLASH_ATTR fl_attach_locks(void (*lock)(void), void (*unlock)(void));
+int     ICACHE_FLASH_ATTR fl_attach_media(fn_diskio_read rd, fn_diskio_write wr);
+void    ICACHE_FLASH_ATTR fl_shutdown(void);
 
 // Standard API
-void*               fl_fopen(const char *path, const char *modifiers);
-void                fl_fclose(void *file);
-int                 fl_fflush(void *file);
-int                 fl_fgetc(void *file);
-char *              fl_fgets(char *s, int n, void *f);
-int                 fl_fputc(int c, void *file);
-int                 fl_fputs(const char * str, void *file);
-int                 fl_fwrite(const void * data, int size, int count, void *file );
-int                 fl_fread(void * data, int size, int count, void *file );
-int                 fl_fseek(void *file , long offset , int origin );
-int                 fl_fgetpos(void *file , uint32 * position);
-long                fl_ftell(void *f);
-int                 fl_feof(void *f);
-int                 fl_remove(const char * filename);
+void*   ICACHE_FLASH_ATTR fl_fopen(const char *path, const char *modifiers);
+void    ICACHE_FLASH_ATTR fl_fclose(void *file);
+int     ICACHE_FLASH_ATTR fl_fflush(void *file);
+int     ICACHE_FLASH_ATTR fl_fgetc(void *file);
+char*   ICACHE_FLASH_ATTR fl_fgets(char *s, int n, void *f);
+int     ICACHE_FLASH_ATTR fl_fputc(int c, void *file);
+int     ICACHE_FLASH_ATTR fl_fputs(const char * str, void *file);
+int     ICACHE_FLASH_ATTR fl_fwrite(const void * data, int size, int count, void *file );
+int     ICACHE_FLASH_ATTR fl_fread(void * data, int size, int count, void *file );
+int     ICACHE_FLASH_ATTR fl_fseek(void *file , long offset , int origin );
+int     ICACHE_FLASH_ATTR fl_fgetpos(void *file , uint32 * position);
+long    ICACHE_FLASH_ATTR fl_ftell(void *f);
+int     ICACHE_FLASH_ATTR fl_feof(void *f);
+int     ICACHE_FLASH_ATTR fl_remove(const char * filename);
 
 // Equivelant dirent.h
 typedef struct fs_dir_list_status    FL_DIR;
@@ -134,6 +134,7 @@ struct fatfs*       fl_get_fs(void);
 #define fwrite(a,b,c,d) fl_fwrite(a, b, c, d)
 #define fread(a,b,c,d)  fl_fread(a, b, c, d)
 #define fseek(a,b,c)    fl_fseek(a, b, c)
+#define rewind(a)       fseek(a, 0, SEEK_SET)
 #define fgetpos(a,b)    fl_fgetpos(a, b)
 #define ftell(a)        fl_ftell(a)
 #define feof(a)         fl_feof(a)

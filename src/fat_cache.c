@@ -32,6 +32,9 @@
 #include <string.h>
 #include "fat_cache.h"
 
+#include "osapi.h"
+#include "c_types.h"
+
 // Per file cluster chain caching used to improve performance.
 // This does not have to be enabled for architectures with low
 // memory space.
@@ -39,7 +42,7 @@
 //-----------------------------------------------------------------------------
 // fatfs_cache_init:
 //-----------------------------------------------------------------------------
-int fatfs_cache_init(struct fatfs *fs, FL_FILE *file)
+int ICACHE_FLASH_ATTR fatfs_cache_init(struct fatfs *fs, FL_FILE *file)
 {
 #ifdef FAT_CLUSTER_CACHE_ENTRIES
     int i;
@@ -56,7 +59,7 @@ int fatfs_cache_init(struct fatfs *fs, FL_FILE *file)
 //-----------------------------------------------------------------------------
 // fatfs_cache_get_next_cluster:
 //-----------------------------------------------------------------------------
-int fatfs_cache_get_next_cluster(struct fatfs *fs, FL_FILE *file, uint32 clusterIdx, uint32 *pNextCluster)
+int ICACHE_FLASH_ATTR fatfs_cache_get_next_cluster(struct fatfs *fs, FL_FILE *file, uint32 clusterIdx, uint32 *pNextCluster)
 {
 #ifdef FAT_CLUSTER_CACHE_ENTRIES
     uint32 slot = clusterIdx % FAT_CLUSTER_CACHE_ENTRIES;
@@ -73,7 +76,7 @@ int fatfs_cache_get_next_cluster(struct fatfs *fs, FL_FILE *file, uint32 cluster
 //-----------------------------------------------------------------------------
 // fatfs_cache_set_next_cluster:
 //-----------------------------------------------------------------------------
-int fatfs_cache_set_next_cluster(struct fatfs *fs, FL_FILE *file, uint32 clusterIdx, uint32 nextCluster)
+int ICACHE_FLASH_ATTR fatfs_cache_set_next_cluster(struct fatfs *fs, FL_FILE *file, uint32 clusterIdx, uint32 nextCluster)
 {
 #ifdef FAT_CLUSTER_CACHE_ENTRIES
     uint32 slot = clusterIdx % FAT_CLUSTER_CACHE_ENTRIES;

@@ -33,10 +33,13 @@
 #include <string.h>
 #include "fat_misc.h"
 
+#include "osapi.h"
+#include "c_types.h"
+
 //-----------------------------------------------------------------------------
 // fatfs_lfn_cache_init: Clear long file name cache
 //-----------------------------------------------------------------------------
-void fatfs_lfn_cache_init(struct lfn_cache *lfn, int wipeTable)
+void ICACHE_FLASH_ATTR fatfs_lfn_cache_init(struct lfn_cache *lfn, int wipeTable)
 {
     int i = 0;
 
@@ -55,7 +58,7 @@ void fatfs_lfn_cache_init(struct lfn_cache *lfn, int wipeTable)
 // at a specific offset
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
-void fatfs_lfn_cache_entry(struct lfn_cache *lfn, uint8 *entryBuffer)
+void ICACHE_FLASH_ATTR fatfs_lfn_cache_entry(struct lfn_cache *lfn, uint8 *entryBuffer)
 {
     uint8 LFNIndex, i;
     LFNIndex = entryBuffer[0] & 0x1F;
@@ -94,7 +97,7 @@ void fatfs_lfn_cache_entry(struct lfn_cache *lfn, uint8 *entryBuffer)
 // fatfs_lfn_cache_get: Get a reference to the long filename
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
-char* fatfs_lfn_cache_get(struct lfn_cache *lfn)
+char* ICACHE_FLASH_ATTR fatfs_lfn_cache_get(struct lfn_cache *lfn)
 {
     // Null terminate long filename
     if (lfn->no_of_strings == MAX_LONGFILENAME_ENTRIES)
@@ -111,7 +114,7 @@ char* fatfs_lfn_cache_get(struct lfn_cache *lfn)
 // fatfs_entry_lfn_text: If LFN text entry found
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
-int fatfs_entry_lfn_text(struct fat_dir_entry *entry)
+int ICACHE_FLASH_ATTR fatfs_entry_lfn_text(struct fat_dir_entry *entry)
 {
     if ((entry->Attr & FILE_ATTR_LFN_TEXT) == FILE_ATTR_LFN_TEXT)
         return 1;
@@ -123,7 +126,7 @@ int fatfs_entry_lfn_text(struct fat_dir_entry *entry)
 // fatfs_entry_lfn_invalid: If SFN found not relating to LFN
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
-int fatfs_entry_lfn_invalid(struct fat_dir_entry *entry)
+int ICACHE_FLASH_ATTR fatfs_entry_lfn_invalid(struct fat_dir_entry *entry)
 {
     if ( (entry->Name[0]==FILE_HEADER_BLANK)  ||
          (entry->Name[0]==FILE_HEADER_DELETED)||
@@ -138,7 +141,7 @@ int fatfs_entry_lfn_invalid(struct fat_dir_entry *entry)
 // fatfs_entry_lfn_exists: If LFN exists and correlation SFN found
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
-int fatfs_entry_lfn_exists(struct lfn_cache *lfn, struct fat_dir_entry *entry)
+int ICACHE_FLASH_ATTR fatfs_entry_lfn_exists(struct lfn_cache *lfn, struct fat_dir_entry *entry)
 {
     if ( (entry->Attr!=FILE_ATTR_LFN_TEXT) &&
          (entry->Name[0]!=FILE_HEADER_BLANK) &&
@@ -154,7 +157,7 @@ int fatfs_entry_lfn_exists(struct lfn_cache *lfn, struct fat_dir_entry *entry)
 //-----------------------------------------------------------------------------
 // fatfs_entry_sfn_only: If SFN only exists
 //-----------------------------------------------------------------------------
-int fatfs_entry_sfn_only(struct fat_dir_entry *entry)
+int ICACHE_FLASH_ATTR fatfs_entry_sfn_only(struct fat_dir_entry *entry)
 {
     if ( (entry->Attr!=FILE_ATTR_LFN_TEXT) &&
          (entry->Name[0]!=FILE_HEADER_BLANK) &&
@@ -169,7 +172,7 @@ int fatfs_entry_sfn_only(struct fat_dir_entry *entry)
 //-----------------------------------------------------------------------------
 // fatfs_entry_is_dir: Returns 1 if a directory
 //-----------------------------------------------------------------------------
-int fatfs_entry_is_dir(struct fat_dir_entry *entry)
+int ICACHE_FLASH_ATTR fatfs_entry_is_dir(struct fat_dir_entry *entry)
 {
     if (entry->Attr & FILE_TYPE_DIR)
         return 1;
@@ -179,7 +182,7 @@ int fatfs_entry_is_dir(struct fat_dir_entry *entry)
 //-----------------------------------------------------------------------------
 // fatfs_entry_is_file: Returns 1 is a file entry
 //-----------------------------------------------------------------------------
-int fatfs_entry_is_file(struct fat_dir_entry *entry)
+int ICACHE_FLASH_ATTR fatfs_entry_is_file(struct fat_dir_entry *entry)
 {
     if (entry->Attr & FILE_TYPE_FILE)
         return 1;
@@ -190,7 +193,7 @@ int fatfs_entry_is_file(struct fat_dir_entry *entry)
 // fatfs_lfn_entries_required: Calculate number of 13 characters entries
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
-int fatfs_lfn_entries_required(char *filename)
+int ICACHE_FLASH_ATTR fatfs_lfn_entries_required(char *filename)
 {
     int length = (int)strlen(filename);
 
@@ -204,7 +207,7 @@ int fatfs_lfn_entries_required(char *filename)
 // fatfs_filename_to_lfn:
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
-void fatfs_filename_to_lfn(char *filename, uint8 *buffer, int entry, uint8 sfnChk)
+void ICACHE_FLASH_ATTR fatfs_filename_to_lfn(char *filename, uint8 *buffer, int entry, uint8 sfnChk)
 {
     int i;
     int nameIndexes[MAX_LFN_ENTRY_LENGTH] = {1,3,5,7,9,0x0E,0x10,0x12,0x14,0x16,0x18,0x1C,0x1E};
@@ -247,7 +250,7 @@ void fatfs_filename_to_lfn(char *filename, uint8 *buffer, int entry, uint8 sfnCh
 // fatfs_sfn_create_entry: Create the short filename directory entry
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-void fatfs_sfn_create_entry(char *shortfilename, uint32 size, uint32 startCluster, struct fat_dir_entry *entry, int dir)
+void ICACHE_FLASH_ATTR fatfs_sfn_create_entry(char *shortfilename, uint32 size, uint32 startCluster, struct fat_dir_entry *entry, int dir)
 {
     int i;
 
@@ -282,7 +285,7 @@ void fatfs_sfn_create_entry(char *shortfilename, uint32 size, uint32 startCluste
 // fatfs_lfn_create_sfn: Create a padded SFN
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_lfn_create_sfn(char *sfn_output, char *filename)
+int ICACHE_FLASH_ATTR fatfs_lfn_create_sfn(char *sfn_output, char *filename)
 {
     int i;
     int dotPos = -1;
@@ -347,7 +350,7 @@ int fatfs_lfn_create_sfn(char *sfn_output, char *filename)
 //-----------------------------------------------------------------------------
 // fatfs_itoa:
 //-----------------------------------------------------------------------------
-static void fatfs_itoa(uint32 num, char *s)
+static ICACHE_FLASH_ATTR void fatfs_itoa(uint32 num, char *s)
 {
     char* cp;
     char outbuf[12];
@@ -377,7 +380,7 @@ static void fatfs_itoa(uint32 num, char *s)
 //-----------------------------------------------------------------------------
 #if FATFS_INC_LFN_SUPPORT
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_lfn_generate_tail(char *sfn_output, char *sfn_input, uint32 tailNum)
+int ICACHE_FLASH_ATTR fatfs_lfn_generate_tail(char *sfn_output, char *sfn_input, uint32 tailNum)
 {
     int tail_chars;
     char tail_str[12];
@@ -405,7 +408,7 @@ int fatfs_lfn_generate_tail(char *sfn_output, char *sfn_input, uint32 tailNum)
 // fatfs_convert_from_fat_time: Convert FAT time to h/m/s
 //-----------------------------------------------------------------------------
 #if FATFS_INC_TIME_DATE_SUPPORT
-void fatfs_convert_from_fat_time(uint16 fat_time, int *hours, int *minutes, int *seconds)
+void ICACHE_FLASH_ATTR fatfs_convert_from_fat_time(uint16 fat_time, int *hours, int *minutes, int *seconds)
 {
     *hours = (fat_time >> FAT_TIME_HOURS_SHIFT) & FAT_TIME_HOURS_MASK;
     *minutes = (fat_time >> FAT_TIME_MINUTES_SHIFT) & FAT_TIME_MINUTES_MASK;
@@ -415,7 +418,7 @@ void fatfs_convert_from_fat_time(uint16 fat_time, int *hours, int *minutes, int 
 //-----------------------------------------------------------------------------
 // fatfs_convert_from_fat_date: Convert FAT date to d/m/y
 //-----------------------------------------------------------------------------
-void fatfs_convert_from_fat_date(uint16 fat_date, int *day, int *month, int *year)
+void ICACHE_FLASH_ATTR fatfs_convert_from_fat_date(uint16 fat_date, int *day, int *month, int *year)
 {
     *day = (fat_date >> FAT_DATE_DAY_SHIFT) & FAT_DATE_DAY_MASK;
     *month = (fat_date >> FAT_DATE_MONTH_SHIFT) & FAT_DATE_MONTH_MASK;
@@ -425,7 +428,7 @@ void fatfs_convert_from_fat_date(uint16 fat_date, int *day, int *month, int *yea
 //-----------------------------------------------------------------------------
 // fatfs_convert_to_fat_time: Convert h/m/s to FAT time
 //-----------------------------------------------------------------------------
-uint16 fatfs_convert_to_fat_time(int hours, int minutes, int seconds)
+uint16 ICACHE_FLASH_ATTR fatfs_convert_to_fat_time(int hours, int minutes, int seconds)
 {
     uint16 fat_time = 0;
 
@@ -441,7 +444,7 @@ uint16 fatfs_convert_to_fat_time(int hours, int minutes, int seconds)
 //-----------------------------------------------------------------------------
 // fatfs_convert_to_fat_date: Convert d/m/y to FAT date
 //-----------------------------------------------------------------------------
-uint16 fatfs_convert_to_fat_date(int day, int month, int year)
+uint16 ICACHE_FLASH_ATTR fatfs_convert_to_fat_date(int day, int month, int year)
 {
     uint16 fat_date = 0;
 
@@ -460,7 +463,7 @@ uint16 fatfs_convert_to_fat_date(int day, int month, int year)
 // fatfs_print_sector:
 //-----------------------------------------------------------------------------
 #ifdef FATFS_DEBUG
-void fatfs_print_sector(uint32 sector, uint8 *data)
+void ICACHE_FLASH_ATTR fatfs_print_sector(uint32 sector, uint8 *data)
 {
     int i;
     int j;

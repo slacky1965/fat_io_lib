@@ -37,10 +37,13 @@
 #include "fat_string.h"
 #include "fat_misc.h"
 
+#include "osapi.h"
+#include "c_types.h"
+
 //-----------------------------------------------------------------------------
 // fatfs_init: Load FAT Parameters
 //-----------------------------------------------------------------------------
-int fatfs_init(struct fatfs *fs)
+int ICACHE_FLASH_ATTR fatfs_init(struct fatfs *fs)
 {
     uint8 num_of_fats;
     uint16 reserved_sectors;
@@ -192,7 +195,7 @@ int fatfs_init(struct fatfs *fs)
 // fatfs_lba_of_cluster: This function converts a cluster number into a sector /
 // LBA number.
 //-----------------------------------------------------------------------------
-uint32 fatfs_lba_of_cluster(struct fatfs *fs, uint32 Cluster_Number)
+uint32 ICACHE_FLASH_ATTR ICACHE_FLASH_ATTR fatfs_lba_of_cluster(struct fatfs *fs, uint32 Cluster_Number)
 {
     if (fs->fat_type == FAT_TYPE_16)
         return (fs->cluster_begin_lba + (fs->root_entry_count * 32 / FAT_SECTOR_SIZE) + ((Cluster_Number-2) * fs->sectors_per_cluster));
@@ -202,14 +205,14 @@ uint32 fatfs_lba_of_cluster(struct fatfs *fs, uint32 Cluster_Number)
 //-----------------------------------------------------------------------------
 // fatfs_sector_read:
 //-----------------------------------------------------------------------------
-int fatfs_sector_read(struct fatfs *fs, uint32 lba, uint8 *target, uint32 count)
+int ICACHE_FLASH_ATTR fatfs_sector_read(struct fatfs *fs, uint32 lba, uint8 *target, uint32 count)
 {
     return fs->disk_io.read_media(lba, target, count);
 }
 //-----------------------------------------------------------------------------
 // fatfs_sector_write:
 //-----------------------------------------------------------------------------
-int fatfs_sector_write(struct fatfs *fs, uint32 lba, uint8 *target, uint32 count)
+int ICACHE_FLASH_ATTR fatfs_sector_write(struct fatfs *fs, uint32 lba, uint8 *target, uint32 count)
 {
     return fs->disk_io.write_media(lba, target, count);
 }
@@ -217,7 +220,7 @@ int fatfs_sector_write(struct fatfs *fs, uint32 lba, uint8 *target, uint32 count
 // fatfs_sector_reader: From the provided startcluster and sector offset
 // Returns True if success, returns False if not (including if read out of range)
 //-----------------------------------------------------------------------------
-int fatfs_sector_reader(struct fatfs *fs, uint32 start_cluster, uint32 offset, uint8 *target)
+int ICACHE_FLASH_ATTR fatfs_sector_reader(struct fatfs *fs, uint32 start_cluster, uint32 offset, uint8 *target)
 {
     uint32 sector_to_read = 0;
     uint32 cluster_to_read = 0;
@@ -271,7 +274,7 @@ int fatfs_sector_reader(struct fatfs *fs, uint32 start_cluster, uint32 offset, u
 // fatfs_read_sector: Read from the provided cluster and sector offset
 // Returns True if success, returns False if not
 //-----------------------------------------------------------------------------
-int fatfs_read_sector(struct fatfs *fs, uint32 cluster, uint32 sector, uint8 *target)
+int ICACHE_FLASH_ATTR fatfs_read_sector(struct fatfs *fs, uint32 cluster, uint32 sector, uint8 *target)
 {
     // FAT16 Root directory
     if (fs->fat_type == FAT_TYPE_16 && cluster == 0)
@@ -326,7 +329,7 @@ int fatfs_read_sector(struct fatfs *fs, uint32 cluster, uint32 sector, uint8 *ta
 // Returns True if success, returns False if not
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_write_sector(struct fatfs *fs, uint32 cluster, uint32 sector, uint8 *target)
+int ICACHE_FLASH_ATTR fatfs_write_sector(struct fatfs *fs, uint32 cluster, uint32 sector, uint8 *target)
 {
     // No write access?
     if (!fs->disk_io.write_media)
@@ -384,7 +387,7 @@ int fatfs_write_sector(struct fatfs *fs, uint32 cluster, uint32 sector, uint8 *t
 //-----------------------------------------------------------------------------
 // fatfs_show_details: Show the details about the filesystem
 //-----------------------------------------------------------------------------
-void fatfs_show_details(struct fatfs *fs)
+void ICACHE_FLASH_ATTR fatfs_show_details(struct fatfs *fs)
 {
     FAT_PRINTF(("FAT details:\r\n"));
     FAT_PRINTF((" Type =%s", (fs->fat_type == FAT_TYPE_32) ? "FAT32": "FAT16"));
@@ -396,7 +399,7 @@ void fatfs_show_details(struct fatfs *fs)
 //-----------------------------------------------------------------------------
 // fatfs_get_root_cluster: Get the root dir cluster
 //-----------------------------------------------------------------------------
-uint32 fatfs_get_root_cluster(struct fatfs *fs)
+uint32 ICACHE_FLASH_ATTR fatfs_get_root_cluster(struct fatfs *fs)
 {
     // NOTE: On FAT16 this will be 0 which has a special meaning...
     return fs->rootdir_first_cluster;
@@ -404,7 +407,7 @@ uint32 fatfs_get_root_cluster(struct fatfs *fs)
 //-------------------------------------------------------------
 // fatfs_get_file_entry: Find the file entry for a filename
 //-------------------------------------------------------------
-uint32 fatfs_get_file_entry(struct fatfs *fs, uint32 Cluster, char *name_to_find, struct fat_dir_entry *sfEntry)
+uint32 ICACHE_FLASH_ATTR fatfs_get_file_entry(struct fatfs *fs, uint32 Cluster, char *name_to_find, struct fat_dir_entry *sfEntry)
 {
     uint8 item=0;
     uint16 recordoffset = 0;
@@ -437,7 +440,6 @@ uint32 fatfs_get_file_entry(struct fatfs *fs, uint32 Cluster, char *name_to_find
                 // Long File Name Text Found
                 if (fatfs_entry_lfn_text(directoryEntry) )
                     fatfs_lfn_cache_entry(&lfn, fs->currentsector.sector+recordoffset);
-
                 // If Invalid record found delete any long file name information collated
                 else if (fatfs_entry_lfn_invalid(directoryEntry) )
                     fatfs_lfn_cache_init(&lfn, 0);
@@ -510,7 +512,7 @@ uint32 fatfs_get_file_entry(struct fatfs *fs, uint32 Cluster, char *name_to_find
 // NOTE: shortname is XXXXXXXXYYY not XXXXXXXX.YYY
 //-------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_sfn_exists(struct fatfs *fs, uint32 Cluster, char *shortname)
+int ICACHE_FLASH_ATTR fatfs_sfn_exists(struct fatfs *fs, uint32 Cluster, char *shortname)
 {
     uint8 item=0;
     uint16 recordoffset = 0;
@@ -561,7 +563,7 @@ int fatfs_sfn_exists(struct fatfs *fs, uint32 Cluster, char *shortname)
 // fatfs_update_timestamps: Update date/time details
 //-------------------------------------------------------------
 #if FATFS_INC_TIME_DATE_SUPPORT
-int fatfs_update_timestamps(struct fat_dir_entry *directoryEntry, int create, int modify, int access)
+int ICACHE_FLASH_ATTR fatfs_update_timestamps(struct fat_dir_entry *directoryEntry, int create, int modify, int access)
 {
     time_t time_now;
     struct tm * time_info;
@@ -613,7 +615,7 @@ int fatfs_update_timestamps(struct fat_dir_entry *directoryEntry, int create, in
 // NOTE: shortname is XXXXXXXXYYY not XXXXXXXX.YYY
 //-------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_update_file_length(struct fatfs *fs, uint32 Cluster, char *shortname, uint32 fileLength)
+int ICACHE_FLASH_ATTR fatfs_update_file_length(struct fatfs *fs, uint32 Cluster, char *shortname, uint32 fileLength)
 {
     uint8 item=0;
     uint16 recordoffset = 0;
@@ -683,7 +685,7 @@ int fatfs_update_file_length(struct fatfs *fs, uint32 Cluster, char *shortname, 
 // NOTE: shortname is XXXXXXXXYYY not XXXXXXXX.YYY
 //-------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_mark_file_deleted(struct fatfs *fs, uint32 Cluster, char *shortname)
+int ICACHE_FLASH_ATTR fatfs_mark_file_deleted(struct fatfs *fs, uint32 Cluster, char *shortname)
 {
     uint8 item=0;
     uint16 recordoffset = 0;
@@ -753,7 +755,7 @@ int fatfs_mark_file_deleted(struct fatfs *fs, uint32 Cluster, char *shortname)
 // fatfs_list_directory_start: Initialise a directory listing procedure
 //-----------------------------------------------------------------------------
 #if FATFS_DIR_LIST_SUPPORT
-void fatfs_list_directory_start(struct fatfs *fs, struct fs_dir_list_status *dirls, uint32 StartCluster)
+void ICACHE_FLASH_ATTR fatfs_list_directory_start(struct fatfs *fs, struct fs_dir_list_status *dirls, uint32 StartCluster)
 {
     dirls->cluster = StartCluster;
     dirls->sector = 0;
@@ -765,7 +767,7 @@ void fatfs_list_directory_start(struct fatfs *fs, struct fs_dir_list_status *dir
 // Returns: 1 = found, 0 = end of listing
 //-----------------------------------------------------------------------------
 #if FATFS_DIR_LIST_SUPPORT
-int fatfs_list_directory_next(struct fatfs *fs, struct fs_dir_list_status *dirls, struct fs_dir_ent *entry)
+int ICACHE_FLASH_ATTR fatfs_list_directory_next(struct fatfs *fs, struct fs_dir_list_status *dirls, struct fs_dir_ent *entry)
 {
     uint8 i,item;
     uint16 recordoffset;

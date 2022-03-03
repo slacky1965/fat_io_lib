@@ -41,7 +41,7 @@
 //        /dev/etc/samba.conf
 // Returns: -1 = Error, 0 or more = Ok
 //-----------------------------------------------------------------------------
-int fatfs_total_path_levels(char *path)
+int ICACHE_FLASH_ATTR fatfs_total_path_levels(char *path)
 {
     int levels = 0;
     char expectedchar;
@@ -89,7 +89,7 @@ int fatfs_total_path_levels(char *path)
 // E.g. C:\folder\file.zip : Level 0 = C:\folder, Level 1 = file.zip
 // Returns: -1 = Error, 0 = Ok
 //-----------------------------------------------------------------------------
-int fatfs_get_substring(char *path, int levelreq, char *output, int max_len)
+int ICACHE_FLASH_ATTR fatfs_get_substring(char *path, int levelreq, char *output, int max_len)
 {
     int i;
     int pathlen=0;
@@ -148,7 +148,7 @@ int fatfs_get_substring(char *path, int levelreq, char *output, int max_len)
 // E.g. C:\folder\file.zip -> path = C:\folder  filename = file.zip
 // E.g. C:\file.zip -> path = [blank]  filename = file.zip
 //-----------------------------------------------------------------------------
-int fatfs_split_path(char *full_path, char *path, int max_path, char *filename, int max_filename)
+int ICACHE_FLASH_ATTR fatfs_split_path(char *full_path, char *path, int max_path, char *filename, int max_filename)
 {
     int strindex;
 
@@ -179,7 +179,7 @@ int fatfs_split_path(char *full_path, char *path, int max_path, char *filename, 
 //-----------------------------------------------------------------------------
 // FileString_StrCmpNoCase: Compare two strings case with case sensitivity
 //-----------------------------------------------------------------------------
-static int FileString_StrCmpNoCase(char *s1, char *s2, int n)
+static int ICACHE_FLASH_ATTR FileString_StrCmpNoCase(char *s1, char *s2, int n)
 {
     int diff;
     char a,b;
@@ -214,7 +214,7 @@ static int FileString_StrCmpNoCase(char *s1, char *s2, int n)
 // FileString_GetExtension: Get index to extension within filename
 // Returns -1 if not found or index otherwise
 //-----------------------------------------------------------------------------
-static int FileString_GetExtension(char *str)
+static int ICACHE_FLASH_ATTR FileString_GetExtension(char *str)
 {
     int dotPos = -1;
     char *strSrc = str;
@@ -234,7 +234,7 @@ static int FileString_GetExtension(char *str)
 // FileString_TrimLength: Get length of string excluding trailing spaces
 // Returns -1 if not found or index otherwise
 //-----------------------------------------------------------------------------
-static int FileString_TrimLength(char *str, int strLen)
+static int ICACHE_FLASH_ATTR FileString_TrimLength(char *str, int strLen)
 {
     int length = strLen;
     char *strSrc = str+strLen-1;
@@ -257,7 +257,7 @@ static int FileString_TrimLength(char *str, int strLen)
 // fatfs_compare_names: Compare two filenames (without copying or changing origonals)
 // Returns 1 if match, 0 if not
 //-----------------------------------------------------------------------------
-int fatfs_compare_names(char* strA, char* strB)
+int ICACHE_FLASH_ATTR fatfs_compare_names(char* strA, char* strB)
 {
     char *ext1 = NULL;
     char *ext2 = NULL;
@@ -320,7 +320,7 @@ int fatfs_compare_names(char* strA, char* strB)
 //-----------------------------------------------------------------------------
 // fatfs_string_ends_with_slash: Does the string end with a slash (\ or /)
 //-----------------------------------------------------------------------------
-int fatfs_string_ends_with_slash(char *path)
+int ICACHE_FLASH_ATTR fatfs_string_ends_with_slash(char *path)
 {
     if (path)
     {
@@ -342,7 +342,7 @@ int fatfs_string_ends_with_slash(char *path)
 //-----------------------------------------------------------------------------
 // fatfs_get_sfn_display_name: Get display name for SFN entry
 //-----------------------------------------------------------------------------
-int fatfs_get_sfn_display_name(char* out, char* in)
+int ICACHE_FLASH_ATTR fatfs_get_sfn_display_name(char* out, char* in)
 {
     int len = 0;
     while (*in && len <= 11)
@@ -367,7 +367,7 @@ int fatfs_get_sfn_display_name(char* out, char* in)
 // Returned extension is always lower case.
 // Returns: 1 if ok, 0 if not.
 //-----------------------------------------------------------------------------
-int fatfs_get_extension(char* filename, char* out, int maxlen)
+int ICACHE_FLASH_ATTR fatfs_get_extension(char* filename, char* out, int maxlen)
 {
     int len = 0;
 
@@ -400,7 +400,7 @@ int fatfs_get_extension(char* filename, char* out, int maxlen)
 // fatfs_create_path_string: Append path & filename to create file path string.
 // Returns: 1 if ok, 0 if not.
 //-----------------------------------------------------------------------------
-int fatfs_create_path_string(char* path, char *filename, char* out, int maxlen)
+int ICACHE_FLASH_ATTR fatfs_create_path_string(char* path, char *filename, char* out, int maxlen)
 {
     int len = 0;
     char last = 0;
@@ -438,7 +438,7 @@ int fatfs_create_path_string(char* path, char *filename, char* out, int maxlen)
 // Test Bench
 //-----------------------------------------------------------------------------
 #ifdef FAT_STRING_TESTBENCH
-void main(void)
+void ICACHE_FLASH_ATTR main(void)
 {
     char output[255];
     char output2[255];

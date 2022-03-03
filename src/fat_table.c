@@ -57,7 +57,7 @@
 //-----------------------------------------------------------------------------
 // fatfs_fat_init:
 //-----------------------------------------------------------------------------
-void fatfs_fat_init(struct fatfs *fs)
+void ICACHE_FLASH_ATTR fatfs_fat_init(struct fatfs *fs)
 {
     int i;
 
@@ -80,7 +80,7 @@ void fatfs_fat_init(struct fatfs *fs)
 //-----------------------------------------------------------------------------
 // fatfs_fat_writeback: Writeback 'dirty' FAT sectors to disk
 //-----------------------------------------------------------------------------
-static int fatfs_fat_writeback(struct fatfs *fs, struct fat_buffer *pcur)
+static int ICACHE_FLASH_ATTR fatfs_fat_writeback(struct fatfs *fs, struct fat_buffer *pcur)
 {
     if (pcur)
     {
@@ -113,7 +113,7 @@ static int fatfs_fat_writeback(struct fatfs *fs, struct fat_buffer *pcur)
 //-----------------------------------------------------------------------------
 // fatfs_fat_read_sector: Read a FAT sector
 //-----------------------------------------------------------------------------
-static struct fat_buffer *fatfs_fat_read_sector(struct fatfs *fs, uint32 sector)
+static struct ICACHE_FLASH_ATTR fat_buffer *fatfs_fat_read_sector(struct fatfs *fs, uint32 sector)
 {
     struct fat_buffer *last = NULL;
     struct fat_buffer *pcur = fs->fat_buffer_head;
@@ -176,7 +176,7 @@ static struct fat_buffer *fatfs_fat_read_sector(struct fatfs *fs, uint32 sector)
 //-----------------------------------------------------------------------------
 // fatfs_fat_purge: Purge 'dirty' FAT sectors to disk
 //-----------------------------------------------------------------------------
-int fatfs_fat_purge(struct fatfs *fs)
+int ICACHE_FLASH_ATTR fatfs_fat_purge(struct fatfs *fs)
 {
     struct fat_buffer *pcur = fs->fat_buffer_head;
 
@@ -202,7 +202,7 @@ int fatfs_fat_purge(struct fatfs *fs)
 // fatfs_find_next_cluster: Return cluster number of next cluster in chain by
 // reading FAT table and traversing it. Return 0xffffffff for end of chain.
 //-----------------------------------------------------------------------------
-uint32 fatfs_find_next_cluster(struct fatfs *fs, uint32 current_cluster)
+uint32 ICACHE_FLASH_ATTR fatfs_find_next_cluster(struct fatfs *fs, uint32 current_cluster)
 {
     uint32 fat_sector_offset, position;
     uint32 nextcluster;
@@ -257,7 +257,7 @@ uint32 fatfs_find_next_cluster(struct fatfs *fs, uint32 current_cluster)
 //-----------------------------------------------------------------------------
 // fatfs_set_fs_info_next_free_cluster: Write the next free cluster to the FSINFO table
 //-----------------------------------------------------------------------------
-void fatfs_set_fs_info_next_free_cluster(struct fatfs *fs, uint32 newValue)
+void ICACHE_FLASH_ATTR fatfs_set_fs_info_next_free_cluster(struct fatfs *fs, uint32 newValue)
 {
     if (fs->fat_type == FAT_TYPE_16)
         ;
@@ -285,7 +285,7 @@ void fatfs_set_fs_info_next_free_cluster(struct fatfs *fs, uint32 newValue)
 // fatfs_find_blank_cluster: Find a free cluster entry by reading the FAT
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_find_blank_cluster(struct fatfs *fs, uint32 start_cluster, uint32 *free_cluster)
+int ICACHE_FLASH_ATTR fatfs_find_blank_cluster(struct fatfs *fs, uint32 start_cluster, uint32 *free_cluster)
 {
     uint32 fat_sector_offset, position;
     uint32 nextcluster;
@@ -346,7 +346,7 @@ int fatfs_find_blank_cluster(struct fatfs *fs, uint32 start_cluster, uint32 *fre
 // write (slow).
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_fat_set_cluster(struct fatfs *fs, uint32 cluster, uint32 next_cluster)
+int ICACHE_FLASH_ATTR fatfs_fat_set_cluster(struct fatfs *fs, uint32 cluster, uint32 next_cluster)
 {
     struct fat_buffer *pbuf;
     uint32 fat_sector_offset, position;
@@ -386,7 +386,7 @@ int fatfs_fat_set_cluster(struct fatfs *fs, uint32 cluster, uint32 next_cluster)
 // fatfs_free_cluster_chain: Follow a chain marking each element as free
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_free_cluster_chain(struct fatfs *fs, uint32 start_cluster)
+int ICACHE_FLASH_ATTR fatfs_free_cluster_chain(struct fatfs *fs, uint32 start_cluster)
 {
     uint32 last_cluster;
     uint32 next_cluster = start_cluster;
@@ -411,7 +411,7 @@ int fatfs_free_cluster_chain(struct fatfs *fs, uint32 start_cluster)
 // to the current tail.
 //-----------------------------------------------------------------------------
 #if FATFS_INC_WRITE_SUPPORT
-int fatfs_fat_add_cluster_to_chain(struct fatfs *fs, uint32 start_cluster, uint32 newEntry)
+int ICACHE_FLASH_ATTR fatfs_fat_add_cluster_to_chain(struct fatfs *fs, uint32 start_cluster, uint32 newEntry)
 {
     uint32 last_cluster = FAT32_LAST_CLUSTER;
     uint32 next_cluster = start_cluster;
@@ -442,7 +442,7 @@ int fatfs_fat_add_cluster_to_chain(struct fatfs *fs, uint32 start_cluster, uint3
 //-----------------------------------------------------------------------------
 // fatfs_count_free_clusters:
 //-----------------------------------------------------------------------------
-uint32 fatfs_count_free_clusters(struct fatfs *fs)
+uint32 ICACHE_FLASH_ATTR fatfs_count_free_clusters(struct fatfs *fs)
 {
     uint32 i,j;
     uint32 count = 0;

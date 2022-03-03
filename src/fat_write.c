@@ -42,7 +42,7 @@
 // fatfs_add_free_space: Allocate another cluster of free space to the end
 // of a files cluster chain.
 //-----------------------------------------------------------------------------
-int fatfs_add_free_space(struct fatfs *fs, uint32 *startCluster, uint32 clusters)
+int ICACHE_FLASH_ATTR fatfs_add_free_space(struct fatfs *fs, uint32 *startCluster, uint32 clusters)
 {
     uint32 i;
     uint32 nextcluster;
@@ -79,7 +79,7 @@ int fatfs_add_free_space(struct fatfs *fs, uint32 *startCluster, uint32 clusters
 // 'startCluster' if newFile = false, or allocating a new start to the chain if
 // newFile = true.
 //-----------------------------------------------------------------------------
-int fatfs_allocate_free_space(struct fatfs *fs, int newFile, uint32 *startCluster, uint32 size)
+int ICACHE_FLASH_ATTR fatfs_allocate_free_space(struct fatfs *fs, int newFile, uint32 *startCluster, uint32 size)
 {
     uint32 clusterSize;
     uint32 clusterCount;
@@ -127,7 +127,7 @@ int fatfs_allocate_free_space(struct fatfs *fs, int newFile, uint32 *startCluste
 // fatfs_find_free_dir_offset: Find a free space in the directory for a new entry
 // which takes up 'entryCount' blocks (or allocate some more)
 //-----------------------------------------------------------------------------
-static int fatfs_find_free_dir_offset(struct fatfs *fs, uint32 dirCluster, int entryCount, uint32 *pSector, uint8 *pOffset)
+static int ICACHE_FLASH_ATTR fatfs_find_free_dir_offset(struct fatfs *fs, uint32 dirCluster, int entryCount, uint32 *pSector, uint8 *pOffset)
 {
     struct fat_dir_entry *directoryEntry;
     uint8 item=0;
@@ -263,7 +263,7 @@ static int fatfs_find_free_dir_offset(struct fatfs *fs, uint32 dirCluster, int e
 //-----------------------------------------------------------------------------
 // fatfs_add_file_entry: Add a directory entry to a location found by FindFreeOffset
 //-----------------------------------------------------------------------------
-int fatfs_add_file_entry(struct fatfs *fs, uint32 dirCluster, char *filename, char *shortfilename, uint32 startCluster, uint32 size, int dir)
+int ICACHE_FLASH_ATTR fatfs_add_file_entry(struct fatfs *fs, uint32 dirCluster, char *filename, char *shortfilename, uint32 startCluster, uint32 size, int dir)
 {
     uint8 item=0;
     uint16 recordoffset = 0;
